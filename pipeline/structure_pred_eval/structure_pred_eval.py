@@ -8,9 +8,9 @@ from collections import OrderedDict
 
 from pipeline.utils.align import compute_rigid_alignment
 
-def compute_backbone_rmsd(motif_pdbs_dir, designs_dir, results_dir, verbose):
+def compute_ca_rmsd(motif_pdbs_dir, designs_dir, results_dir, verbose):
     """
-    Compute backbone RMSDS. Outputs are stored in the 
+    Compute alpha carbon RMSDS. Outputs are stored in the 
     results directory, where each line in the file provides statistics on motif 
     constraint satisfactions for a generated structure.
 
@@ -38,7 +38,7 @@ def compute_backbone_rmsd(motif_pdbs_dir, designs_dir, results_dir, verbose):
 
     # Process
     for design_pdb_filepath in tqdm(
-        glob.glob(os.path.join(designs_dir, '*.pdb')),
+        glob.glob(os.path.join(designs_dir, '*.pdb'))[:50],
         desc='Computing motif scores', disable=not verbose
     ):
 
@@ -125,7 +125,7 @@ def compute_backbone_rmsd(motif_pdbs_dir, designs_dir, results_dir, verbose):
         # Save
         with open(motif_scores_filepath, 'a') as file:
             file.write('{},{:.3f}\n'.format(
-                name, motif_ca_rmsd#, motif_bb_rmsd
+                name, motif_ca_rmsd
             ))
 
 def evaluate(structure_dir, results_dir, verbose):
@@ -137,7 +137,7 @@ def evaluate(structure_dir, results_dir, verbose):
             motif_pdbs_path = os.path.join(problem_path, 'motif_pdbs')
             pdbs_path = os.path.join(problem_path, 'pdbs')
             if os.path.isdir(motif_pdbs_path) and os.path.isdir(pdbs_path):
-                compute_backbone_rmsd(motif_pdbs_path, pdbs_path, results_subdir, verbose)
+                compute_ca_rmsd(motif_pdbs_path, pdbs_path, results_subdir, verbose)
 
 if __name__ == "__main__":
 
